@@ -32,7 +32,10 @@ app.use("/api/answers",authMiddleware, answerRoutes);
 // Answers routes middleware
 // const answerRoutes = require("./routes/answerRoute");
 // app.use("/api/answers",authMiddleware, answerRoutes);
-
+// Handle the root URL 
+app.get("/", (req, res) => {
+   res.send("Welcome to Evangadi Forum API!"); 
+  });
 async function start(params) {
     try {
     console.log("Connecting to the database...");
