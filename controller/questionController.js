@@ -2,44 +2,14 @@
 const { StatusCodes } = require("http-status-codes");
 const dbConnection = require("../db/dbconfig");
 const crypto = require("crypto");
+const keywordExtractor = require("keyword-extractor");
 
 // Function to generate a unique alphanumeric string
 function generateUniqueId() {
   return crypto.randomBytes(16).toString("hex");
 }
 
-// Post a Question
-// async function postQuestion(req, res) {
-//   const { title, description } = req.body;
-//   const userid = req.user?.userid; // Extract userid from middleware (authMiddleware)
 
-//   // Check for missing fields
-//   if (!title || !description || !userid) {
-//     return res.status(StatusCodes.BAD_REQUEST).json({
-//       message: "Please provide all required fields",
-//     });
-//   }
-
-//   const questionid = generateUniqueId();
-
-//   try {
-//     // Insert the new question into the database
-//     await dbConnection.query(
-//       "INSERT INTO questions (questionid, userid, title, description) VALUES (?, ?, ?, ?)",
-//       [questionid, userid, title, description]
-//     );
-
-//     return res.status(StatusCodes.CREATED).json({
-//       message: "Question posted successfully",
-//       questionid, // Return the created question ID
-//     });
-//   } catch (error) {
-//     console.error("Error details:", error.message);
-//     return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
-//       message: "Something went wrong. Please try again later.",
-//     });
-//   }
-// }
 async function postQuestion(req, res) 
 { 
   const { title, description, tag } = req.body; const userid = req.user?.userid;
@@ -61,6 +31,74 @@ async function postQuestion(req, res)
          });
         }
       }
+      
+
+      async function postQuestion(req, res) {
+        const { title, description, tag } = req.body;
+        const userid = req.user?.userid; // Extract userid from middleware (authMiddleware)
+
+        // Check for missing fields
+        if (!title || !description) {
+          return res.status(StatusCodes.BAD_REQUEST).json({
+            message: "Please provide all required fields",
+          });
+        }
+
+        const questionid = generateUniqueId();
+
+        // Extract keywords from title or description
+        let extractedTags = [];
+        if (!tag) {
+          const extractedFromTitle = keywordExtractor.extract(title, {
+            language: "english",
+            remove_digits: true,
+            return_changed_case: true,
+            remove_duplicates: true,
+          });
+
+          const extractedFromDescription = keywordExtractor.extract(
+            description,
+            {
+              language: "english",
+              remove_digits: true,
+              return_changed_case: true,
+              remove_duplicates: true,
+            }
+          );
+
+          // Combine extracted keywords and pick the top 3 as tags
+          extractedTags = [
+            ...new Set([...extractedFromTitle, ...extractedFromDescription]),
+          ].slice(0, 3);
+        }
+
+        
+        const finalTag =
+          tag ||
+          (extractedTags.length
+            ? extractedTags.join(", ")
+            : "general");
+
+        try {
+          // Insert the new question into the database
+          await dbConnection.query(
+            "INSERT INTO questions (questionid, userid, title, description, tag) VALUES (?, ?, ?, ?, ?)",
+            [questionid, userid, title, description, finalTag]
+          );
+
+          return res.status(StatusCodes.CREATED).json({
+            message: "Question posted successfully",
+            questionid, // Return the created question ID
+            tags: finalTag,
+          });
+        } catch (error) {
+          console.error("Error details:", error.message);
+          return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+            message: "Something went wrong. Please try again later.",
+          });
+        }
+      }
+
 
 // Get All Questions
 
