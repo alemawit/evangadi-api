@@ -10,29 +10,6 @@ function generateUniqueId() {
 }
 
 
-async function postQuestion(req, res) 
-{ 
-  const { title, description, tag } = req.body; const userid = req.user?.userid;
- // Extract userid from middleware (authMiddleware) // Check for missing fields 
- if (!title || !description || !userid || !tag)
-   { 
-    return res.status(StatusCodes.BAD_REQUEST).json({ message: "Please provide all required fields", }); 
-  } 
-  const questionid = generateUniqueId(); 
-  try { 
-    // Insert the new question into the database
-     await dbConnection.query( "INSERT INTO questions (questionid, userid, title, description, tag) VALUES (?, ?, ?, ?, ?)", [questionid, userid, title, description, tag] ); return res.status(StatusCodes.CREATED).json({ message: "Question posted successfully", questionid, 
-      // Return the created question ID 
-      }); } 
-      catch (error) 
-      { 
-        console.error("Error details:", error.message); return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ message: "Something went wrong. Please try again later.",
-
-         });
-        }
-      }
-      
-
       async function postQuestion(req, res) {
         const { title, description, tag } = req.body;
         const userid = req.user?.userid; // Extract userid from middleware (authMiddleware)
@@ -102,36 +79,6 @@ async function postQuestion(req, res)
 
 // Get All Questions
 
-
-// async function allQuestion(req, res) {
-//   try {
-//     console.log("Received GET request for all questions");
-
-//     const [questions] = await dbConnection.query(
-//       `SELECT 
-//         q.questionid, q.title, q.description, q.userid,
-//         u.username, u.firstname, u.lastname,
-//         (SELECT COUNT(*) FROM answers WHERE answers.questionid = q.questionid) AS total_answers
-//       FROM questions AS q 
-//       JOIN users AS u ON q.userid = u.userid`
-//     );
-
-//     console.log("Query result:", questions);
-
-//     if (questions.length === 0) {
-//       return res
-//         .status(StatusCodes.NOT_FOUND)
-//         .json({ message: "No questions found." });
-//     }
-
-//     return res.status(StatusCodes.OK).json(questions);
-//   } catch (error) {
-//     console.error("Error details:", error.message);
-//     return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
-//       message: "Something went wrong. Please try again later.",
-//     });
-//   }
-// }
 
 async function allQuestion(req, res) {
   try {

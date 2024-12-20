@@ -1,6 +1,8 @@
 // database configuration
-const mysql2 = require("mysql2");
+const mysql2 = require("mysql2"); //importing mysql2 from node it uses as abridge between mysqldatabase and node
 
+
+//Instead of a single connection, a connection pool maintains multiple connections to the database.
 const dbConnection = mysql2.createPool({
   user: process.env.USER,
   password: process.env.PASSWORD,
