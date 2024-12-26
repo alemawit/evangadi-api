@@ -59,8 +59,7 @@ function generateUniqueId() {
         try {
           // Insert the new question into the database
           await dbConnection.query(
-            "INSERT INTO questions (questionid, userid, title, description, tag) VALUES (?, ?, ?, ?, ?)",
-            [questionid, userid, title, description, finalTag]
+            c
           );
 
           return res.status(StatusCodes.CREATED).json({
