@@ -97,4 +97,9 @@ async function checkUser(req, res) {
     .status(StatusCodes.OK)
     .json({ msg: "valid user", username, userid });
 }
-module.exports = { register, login, checkUser };
+async function logout(req, res) {
+  return res.status(200).json({ msg: "Successfully logged out" });
+}
+
+
+module.exports = { register, login, checkUser, logout};
