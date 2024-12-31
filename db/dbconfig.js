@@ -21,10 +21,10 @@ const createTables = async () => {
     await db.query(`
       CREATE TABLE IF NOT EXISTS users (
         userid INT(20) NOT NULL AUTO_INCREMENT,
-        username VARCHAR(20) NOT NULL UNIQUE,
+        username VARCHAR(20) NOT NULL ,
         firstname VARCHAR(20) NOT NULL,
         lastname VARCHAR(20) NOT NULL,
-        email VARCHAR(40) NOT NULL UNIQUE,
+        email VARCHAR(40) NOT NULL ,
         password VARCHAR(100) NOT NULL,
         PRIMARY KEY(userid)
       );
@@ -34,7 +34,7 @@ const createTables = async () => {
     await db.query(`
       CREATE TABLE IF NOT EXISTS questions (
         id INT(20) NOT NULL AUTO_INCREMENT,
-        questionid VARCHAR(100) NOT NULL UNIQUE,
+        questionid VARCHAR(100) NOT NULL,
         userid INT(20) NOT NULL,
         title VARCHAR(50) NOT NULL,
         description VARCHAR(200) NOT NULL,

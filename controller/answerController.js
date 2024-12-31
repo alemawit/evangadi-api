@@ -184,7 +184,7 @@ const dbConnection = require("../db/dbconfig");
 
 // Post an answer
 async function postAnswer(req, res) {
-  const { questionid, answer } = req.body;
+  const {  answer } = req.body;
 
   if (!questionid || !answer) {
     return res.status(StatusCodes.BAD_REQUEST).json({
